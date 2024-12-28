@@ -14,7 +14,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   bool music = true,
       geography = false,
-      fooddrinks = false,
+      fooddrink = false,
       sciencenature = false,
       entertainment = false;
 
@@ -130,7 +130,7 @@ void initState() {
                                       onTap: () async {
                                         music = true;
                                         geography = false;
-                                        fooddrinks = false;
+                                        fooddrink = false;
                                         entertainment = false;
                                         sciencenature = false;
                                         option = [];
@@ -189,7 +189,7 @@ void initState() {
                                       onTap: () async{
                                           music = false;
                                           geography = true;
-                                          fooddrinks = false;
+                                          fooddrink = false;
                                           entertainment = false;
                                           sciencenature = false;
                                           option = [];
@@ -217,7 +217,7 @@ void initState() {
                                         ),
                                       ),
                                     ),
-                              fooddrinks
+                              fooddrink
                                   ? Container(
                                       margin:
                                           const EdgeInsets.only(right: 20.0),
@@ -248,12 +248,12 @@ void initState() {
                                       onTap: () async{
                                           music = false;
                                           geography = false;
-                                          fooddrinks = true;
+                                          fooddrink = true;
                                           entertainment = false;
                                           sciencenature = false;
                                           option = [];
                                           await RestOption();
-                                          await fetchQuiz("fooddrinks");
+                                          await fetchQuiz("fooddrink");
                                            setState(() {});
                                       },
                                       child: Container(
@@ -307,7 +307,7 @@ void initState() {
                                       onTap: () async{
                                           music = false;
                                           geography = false;
-                                          fooddrinks = false;
+                                          fooddrink = false;
                                           entertainment = false;
                                           sciencenature = true;
                                           option = [];
@@ -366,7 +366,7 @@ void initState() {
                                       onTap: () async{
                                           music = false;
                                           geography = false;
-                                          fooddrinks = false;
+                                          fooddrink = false;
                                           entertainment = true;
                                           sciencenature = false;
                                            option = [];
