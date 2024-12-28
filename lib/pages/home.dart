@@ -191,7 +191,7 @@ class _HomeState extends State<Home> {
       stopwatch.reset();
       participantName = widget.username;
       countdownSeconds = 3;
-      timelineSeconds = 100;
+      timelineSeconds = 30;
     });
     showParticipantNameDialog();
   }
@@ -295,7 +295,7 @@ class _HomeState extends State<Home> {
                             margin: const EdgeInsets.symmetric(horizontal: 20),
                             padding: const EdgeInsets.all(20),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: const Color.fromARGB(255, 255, 255, 255),
                               borderRadius: BorderRadius.circular(30),
                               boxShadow: [
                                 BoxShadow(
@@ -321,7 +321,7 @@ class _HomeState extends State<Home> {
                                   value: timelineSeconds / 100,
                                   backgroundColor: Colors.grey.shade300,
                                   valueColor: const AlwaysStoppedAnimation<Color>(
-                                      Colors.blue),
+                                      Color.fromARGB(255, 5, 25, 41)),
                                 ),
                                 const SizedBox(height: 20),
                                 // Vertical list of options
@@ -432,7 +432,7 @@ class _HomeState extends State<Home> {
         margin: const EdgeInsets.symmetric(horizontal: 10),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF6A9BF4) : Colors.white,
+          color: isSelected ? const Color.fromARGB(255, 255, 0, 208) : Colors.white,
           borderRadius: BorderRadius.circular(30),
           boxShadow: [
             BoxShadow(
