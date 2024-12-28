@@ -6,7 +6,9 @@ import 'package:triviaapp/pages/service.dart';
 import 'dart:math';
 
 class Home extends StatefulWidget {
-  const Home({super.key, required String username});
+  final String username;
+
+  const Home({Key? key, required this.username}) : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
@@ -36,6 +38,8 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    // Use the passed username or fallback
+    participantName = widget.username;
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       showParticipantNameDialog();
     });
@@ -47,12 +51,14 @@ class _HomeState extends State<Home> {
       barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
-          title: Text("Enter Your Name"),
+          title: const Text("Enter Your Name"),
           content: TextField(
             onChanged: (value) {
-              participantName = value;
+              participantName = value.isEmpty ? widget.username : value;
             },
-            decoration: InputDecoration(hintText: "Participant Name"),
+            decoration: InputDecoration(
+              hintText: participantName,
+            ),
           ),
           actions: [
             TextButton(
@@ -60,7 +66,7 @@ class _HomeState extends State<Home> {
                 Navigator.pop(context);
                 startCountdown();
               },
-              child: Text("Start Quiz"),
+              child: const Text("Start Quiz"),
             ),
           ],
         );
@@ -69,7 +75,7 @@ class _HomeState extends State<Home> {
   }
 
   void startCountdown() {
-    countdownTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+    countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         countdownSeconds--;
       });
@@ -83,7 +89,7 @@ class _HomeState extends State<Home> {
   }
 
   void startTimeline() {
-    timelineTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+    timelineTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         timelineSeconds--;
       });
@@ -110,13 +116,13 @@ class _HomeState extends State<Home> {
         Map<String, dynamic> quiz = jsonData[0];
         question = quiz["question"];
         answer = quiz["answer"];
-        await RestOption();
+        await generateOptions();
       }
       setState(() {});
     }
   }
 
-  Future<void> RestOption() async {
+  Future<void> generateOptions() async {
     while (option.length < 3) {
       final response = await http
           .get(Uri.parse('https://api.api-ninjas.com/v1/randomword'), headers: {
@@ -134,6 +140,9 @@ class _HomeState extends State<Home> {
     final random = Random();
     final randomIndex = random.nextInt(option.length + 1);
     option.insert(randomIndex, answer!);
+
+    // Shuffle the options to randomize the correct answer position
+    option.shuffle();
 
     setState(() {});
   }
@@ -153,7 +162,7 @@ class _HomeState extends State<Home> {
       questionCount++;
     });
 
-    Timer(Duration(seconds: 2), () {
+    Timer(const Duration(seconds: 2), () {
       if (questionCount < 10) {
         fetchQuiz(music
             ? "music"
@@ -180,7 +189,7 @@ class _HomeState extends State<Home> {
       correctAnswers = 0;
       wrongAnswers = 0;
       stopwatch.reset();
-      participantName = '';
+      participantName = widget.username;
       countdownSeconds = 3;
       timelineSeconds = 100;
     });
@@ -193,25 +202,25 @@ class _HomeState extends State<Home> {
       barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
-          title: Text("Quiz Result"),
+          title: const Text("Quiz Result"),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 "Participant: $participantName",
-                style: TextStyle(fontSize: 18),
+                style: const TextStyle(fontSize: 18),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Text(
                 "Time Spent: ${stopwatch.elapsed.inSeconds} seconds",
-                style: TextStyle(fontSize: 18),
+                style: const TextStyle(fontSize: 18),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Text(
                 "Score: $score out of 10",
-                style: TextStyle(fontSize: 18),
+                style: const TextStyle(fontSize: 18),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -220,7 +229,7 @@ class _HomeState extends State<Home> {
                     backgroundColor: Colors.green,
                     child: Text(
                       "$correctAnswers",
-                      style: TextStyle(fontSize: 24, color: Colors.white),
+                      style: const TextStyle(fontSize: 24, color: Colors.white),
                     ),
                   ),
                   CircleAvatar(
@@ -228,7 +237,7 @@ class _HomeState extends State<Home> {
                     backgroundColor: Colors.red,
                     child: Text(
                       "$wrongAnswers",
-                      style: TextStyle(fontSize: 24, color: Colors.white),
+                      style: const TextStyle(fontSize: 24, color: Colors.white),
                     ),
                   ),
                 ],
@@ -241,7 +250,7 @@ class _HomeState extends State<Home> {
                 Navigator.pop(context);
                 resetQuiz();
               },
-              child: Text("Restart Quiz"),
+              child: const Text("Restart Quiz"),
             ),
           ],
         );
@@ -263,28 +272,28 @@ class _HomeState extends State<Home> {
             ? Center(
                 child: Text(
                   "$countdownSeconds",
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 72,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: Color.fromARGB(255, 14, 0, 0),
                   ),
                 ),
               )
-            : option.length != 4
-                ? Center(child: CircularProgressIndicator())
+            : option.isEmpty
+                ? const Center(child: CircularProgressIndicator())
                 : SafeArea(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         buildHeader(),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         buildCategoryList(),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         Expanded(
                           child: Container(
-                            margin: EdgeInsets.symmetric(horizontal: 20),
-                            padding: EdgeInsets.all(20),
+                            margin: const EdgeInsets.symmetric(horizontal: 20),
+                            padding: const EdgeInsets.all(20),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(30),
@@ -292,7 +301,7 @@ class _HomeState extends State<Home> {
                                 BoxShadow(
                                   color: Colors.black.withOpacity(0.1),
                                   blurRadius: 10,
-                                  offset: Offset(0, 5),
+                                  offset: const Offset(0, 5),
                                 ),
                               ],
                             ),
@@ -302,29 +311,25 @@ class _HomeState extends State<Home> {
                                 Text(
                                   question!,
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 24,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                SizedBox(height: 20),
+                                const SizedBox(height: 20),
                                 LinearProgressIndicator(
                                   value: timelineSeconds / 100,
                                   backgroundColor: Colors.grey.shade300,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                  valueColor: const AlwaysStoppedAnimation<Color>(
                                       Colors.blue),
                                 ),
-                                SizedBox(height: 20),
+                                const SizedBox(height: 20),
+                                // Vertical list of options
                                 Expanded(
-                                  child: GridView.builder(
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2,
-                                      childAspectRatio: 1.5,
-                                      crossAxisSpacing: 10,
-                                      mainAxisSpacing: 10,
-                                    ),
+                                  child: ListView.separated(
                                     itemCount: option.length,
+                                    separatorBuilder: (context, index) => 
+                                      const SizedBox(height: 10),
                                     itemBuilder: (context, index) {
                                       return buildOptionButton(
                                         option: option[index]
@@ -348,24 +353,24 @@ class _HomeState extends State<Home> {
 
   Widget buildHeader() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 "Score",
                 style: TextStyle(
                   fontSize: 18,
                   color: Colors.white,
                 ),
               ),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
               Text(
                 "$score",
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -376,17 +381,17 @@ class _HomeState extends State<Home> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
+              const Text(
                 "Question",
                 style: TextStyle(
                   fontSize: 18,
                   color: Colors.white,
                 ),
               ),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
               Text(
                 "$questionCount/10",
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -424,16 +429,16 @@ class _HomeState extends State<Home> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 10),
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        margin: const EdgeInsets.symmetric(horizontal: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          color: isSelected ? Color(0xFF6A9BF4) : Colors.white,
+          color: isSelected ? const Color(0xFF6A9BF4) : Colors.white,
           borderRadius: BorderRadius.circular(30),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.1),
               blurRadius: 5,
-              offset: Offset(0, 2),
+              offset: const Offset(0, 2),
             ),
           ],
         ),
@@ -474,15 +479,16 @@ class _HomeState extends State<Home> {
     return GestureDetector(
       onTap: () => checkAnswer(index),
       child: Container(
-        padding: EdgeInsets.all(10),
+        width: double.infinity,
+        padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
           color: getButtonColor(),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.1),
               blurRadius: 5,
-              offset: Offset(0, 2),
+              offset: const Offset(0, 2),
             ),
           ],
         ),
@@ -490,7 +496,7 @@ class _HomeState extends State<Home> {
           child: Text(
             option,
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
@@ -502,24 +508,24 @@ class _HomeState extends State<Home> {
 
   Widget buildFooter() {
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ElevatedButton(
             onPressed: resetQuiz,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xFF6A9BF4),
+              backgroundColor: const Color(0xFF6A9BF4),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30),
               ),
-              padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
               elevation: 5,
               shadowColor: Colors.black.withOpacity(0.2),
             ),
-            child: Text(
+            child: const Text(
               "Reset Quiz",
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -528,5 +534,13 @@ class _HomeState extends State<Home> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    // Cancel timers to prevent memory leaks
+    countdownTimer?.cancel();
+    timelineTimer?.cancel();
+    super.dispose();
   }
 }

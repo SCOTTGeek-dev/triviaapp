@@ -39,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
         setState(() {
           _isLoading = false;
         });
-        
+
         // Navigate to home page
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => Home(username: username)),
@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
     try {
       // Attempt to sign in
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      
+
       if (googleUser != null) {
         // Successfully signed in
         Navigator.of(context).pushReplacement(
@@ -85,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
     } catch (error) {
       // Handle sign-in errors
       String errorMessage = 'Google Sign-In failed';
-      
+
       if (error is PlatformException) {
         switch (error.code) {
           case 'sign_in_canceled':
@@ -136,13 +136,9 @@ class _LoginPageState extends State<LoginPage> {
       child: Scaffold(
         body: Container(
           decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color(0xFF6A9BF4),
-                Color(0xFF4A5FE0),
-              ],
+            image: DecorationImage(
+              image: AssetImage("images/background_login.jpg"),
+              fit: BoxFit.cover,
             ),
           ),
           child: Center(
@@ -158,13 +154,13 @@ class _LoginPageState extends State<LoginPage> {
                     fit: BoxFit.contain,
                   ),
                   const SizedBox(height: 20),
-                  
+
                   // Login Container
                   Container(
                     width: 350,
                     padding: const EdgeInsets.all(30),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: const Color.fromARGB(255, 255, 255, 255),
                       borderRadius: BorderRadius.circular(25),
                       boxShadow: [
                         BoxShadow(
@@ -183,36 +179,38 @@ class _LoginPageState extends State<LoginPage> {
                           style: TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF4A5FE0),
+                            color: Color.fromARGB(255, 1, 13, 88),
                           ),
                         ),
                         const SizedBox(height: 25),
-                        
+
                         // Username TextField
                         TextField(
                           controller: _usernameController,
                           decoration: InputDecoration(
-                            labelText: "Username",
-                            prefixIcon: const Icon(Icons.person, color: Color(0xFF6A9BF4)),
+                            labelText: "Pseudoname",
+                            prefixIcon: const Icon(Icons.person,
+                                color: Color(0xFF6A9BF4)),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
                           ),
                         ),
                         const SizedBox(height: 15),
-                        
+
                         // Password TextField
                         TextField(
                           controller: _passwordController,
                           obscureText: !_isPasswordVisible,
                           decoration: InputDecoration(
                             labelText: "Password",
-                            prefixIcon: const Icon(Icons.lock, color: Color(0xFF6A9BF4)),
+                            prefixIcon: const Icon(Icons.lock,
+                                color: Color(0xFF6A9BF4)),
                             suffixIcon: IconButton(
                               icon: Icon(
-                                _isPasswordVisible 
-                                  ? Icons.visibility 
-                                  : Icons.visibility_off,
+                                _isPasswordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
                                 color: const Color(0xFF6A9BF4),
                               ),
                               onPressed: () {
@@ -227,62 +225,60 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         const SizedBox(height: 25),
-                        
+
                         // Loading or Login Button
                         _isLoading
-                          ? const CircularProgressIndicator()
-                          : Column(
-                              children: [
-                                // Standard Login Button
-                                ElevatedButton(
-                                  onPressed: _login,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF6A9BF4),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30),
+                            ? const CircularProgressIndicator()
+                            : Column(
+                                children: [
+                                  // Standard Login Button
+                                  ElevatedButton(
+                                    onPressed: _login,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color.fromARGB(
+                                          255, 115, 152, 219),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 50, vertical: 15),
                                     ),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 50, vertical: 15),
-                                  ),
-                                  child: const Text(
-                                    "Login",
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 15),
-                                
-                                // Google Sign-In Button
-                                ElevatedButton.icon(
-                                  icon: Image.asset(
-                                    'images/google_logo.png', 
-                                    height: 24, 
-                                    width: 24
-                                  ),
-                                  label: const Text('Sign in with Google'),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.white,
-                                    foregroundColor: Colors.black,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 20, 
-                                      vertical: 12
+                                    child: const Text(
+                                      "Login",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
-                                  onPressed: _handleGoogleSignIn,
-                                ),
-                              ],
-                            ),
+                                  const SizedBox(height: 15),
+
+                                  // Google Sign-In Button
+                                  ElevatedButton.icon(
+                                    icon: Image.asset('images/google_logo.png',
+                                        height: 24, width: 24),
+                                    label: const Text(
+                                        'OAuth2 Using Google (Beta)'),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor:
+                                          const Color.fromARGB(255, 245, 4, 4),
+                                      foregroundColor: Colors.black,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 12),
+                                    ),
+                                    onPressed: _handleGoogleSignIn,
+                                  ),
+                                ],
+                              ),
                       ],
                     ),
                   ),
-                  
+
                   const SizedBox(height: 30),
-                  
+
                   // GitHub Buttons Section
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
